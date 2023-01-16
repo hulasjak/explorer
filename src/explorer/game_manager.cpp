@@ -6,9 +6,10 @@ namespace explorer {
 GameManager::GameManager(/* args */)
 {
     // _current_location = std::make_shared<Location>();
-    _window           = std::make_shared<sf::RenderWindow>(sf::VideoMode(1600, 1000),
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1600, 1000),
                                                  "explorer",
                                                  sf::Style::Close | sf::Style::Titlebar);
+    _window->setFramerateLimit(30);
     _current_location = std::make_shared<Location>();
     _player           = std::make_shared<Player>();
     _goblin           = std::make_shared<Enemy>();
@@ -29,36 +30,34 @@ void GameManager::poll_events()
                 _game_running = false;
                 break;
 
-            case sf::Event::KeyPressed:
-                if (ev.key.code == sf::Keyboard::Up) {
-                    _command_move.y += -1;
-                }
-                if (ev.key.code == sf::Keyboard::Down) {
-                    _command_move.y += 1;
-                }
-                if (ev.key.code == sf::Keyboard::Left) {
-                    _command_move.x += -1;
-                }
-                if (ev.key.code == sf::Keyboard::Right) {
-
-                    _command_move.x += 1;
-                }
-                break;
-
             default:
                 break;
         }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        _command_move.y += -1;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        _command_move.y += 1;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        _command_move.x += -1;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        _command_move.x += 1;
     }
 }
 
 void GameManager::update()
 {
     poll_events();
-    if (_command_move.x || _command_move.y) {
-        _physics.try_moving(_command_move, _player);
-        _command_move.x = 0;
-        _command_move.y = 0;
-    }
+    // if (_command_move.x || _command_move.y) {
+    // _command_move.x = 1;
+    // _command_move.y = 1;
+    _physics.update(_command_move, _player);
+    _command_move.x = 0;
+    _command_move.y = 0;
+    // }
     if (_current_location->is_on_finish(_player->get_boundaries())) {
         new_turn();
     }

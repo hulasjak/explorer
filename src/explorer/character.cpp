@@ -19,12 +19,12 @@ int Character::get_max_speed() const
     return _max_speed;
 }
 
-sf::Vector2i Character::get_current_velocity() const
+sf::Vector2f Character::get_current_velocity() const
 {
     return _current_velocity;
 }
 
-void Character::set_current_velocity(sf::Vector2i updated_velocity)
+void Character::set_current_velocity(sf::Vector2f updated_velocity)
 {
     _current_velocity = updated_velocity;
 }

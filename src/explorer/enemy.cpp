@@ -7,8 +7,8 @@ Enemy::Enemy() {}
 void Enemy::spawn(std::string name, sf::Vector2i const& start_pose)
 {
     set_sprite(start_pose);
-    _name       = name;
-    _move_speed = 1;
+    _name      = name;
+    _max_speed = 1;
 }
 
 void Enemy::set_sprite(sf::Vector2i const& start_pose)

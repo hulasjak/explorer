@@ -10,69 +10,78 @@ void PhysicsEngine::init(std::shared_ptr<Location> location)
     _location = location;
 }
 
-void PhysicsEngine::try_moving(sf::Vector2i const& direction, std::shared_ptr<Character> character)
+bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect const& character_boundary)
 {
-    auto rect = character->get_boundaries();
     sf::Vector2i corner1;
     sf::Vector2i corner2;
 
-    if (direction.x == 1) {
-        corner1.x = rect.left + rect.width + direction.x * character->get_max_speed();
-        corner1.y = rect.top;
+    if (displacement.x > 0) {
+        corner1.x = character_boundary.left + character_boundary.width + displacement.x;
+        corner1.y = character_boundary.top;
         corner2.x = corner1.x;
-        corner2.y = rect.top + rect.height;
+        corner2.y = character_boundary.top + character_boundary.height;
     }
-    else if (direction.x == -1) {
-        corner1.x = rect.left + direction.x * character->get_max_speed();
-        corner1.y = rect.top;
+    else if (displacement.x < 0) {
+        corner1.x = character_boundary.left + displacement.x;
+        corner1.y = character_boundary.top;
         corner2.x = corner1.x;
-        corner2.y = rect.top + rect.height;
+        corner2.y = character_boundary.top + character_boundary.height;
     }
-    else if (direction.y == 1) {
-        corner1.x = rect.left;
-        corner1.y = rect.top + rect.height + direction.y * character->get_max_speed();
-        corner2.x = rect.left + rect.width;
+    if (displacement.y > 0) {
+        corner1.x = character_boundary.left;
+        corner1.y = character_boundary.top + character_boundary.height + displacement.y;
+        corner2.x = character_boundary.left + character_boundary.width;
         corner2.y = corner1.y;
     }
-    else if (direction.y == -1) {
-        corner1.x = rect.left;
-        corner1.y = rect.top + direction.y * character->get_max_speed();
-        corner2.x = rect.left + rect.width;
+    else if (displacement.y < 0) {
+        corner1.x = character_boundary.left;
+        corner1.y = character_boundary.top + displacement.y;
+        corner2.x = character_boundary.left + character_boundary.width;
         corner2.y = corner1.y;
-    }
-    else {
-        return;
     }
 
     if (_location->is_position_free(corner1) && _location->is_position_free(corner2)) {
-        character->move(direction * character->get_max_speed());
+        return true;
     }
+    return false;
 }
 
 void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Character> character)
 {
-    auto new_acc      = character->get_current_acc();
     auto new_velocity = character->get_current_velocity();
-    if (std::abs(character->get_current_velocity().x) != character->get_max_speed())
-        const auto new_acc = character->get_current_acc() + direction;
+    int max_acc       = 20;
 
-    if (direction.x == 0) {
-        new_acc.-=
+    // slowing down
+    if (direction.x == 0 && std::abs(new_velocity.x) > 0.0001) {
+        new_velocity.x -= sign_of(new_velocity.x) * max_acc;
+    }
+    // accelerating
+    else if (direction.x != 0 && std::abs(new_velocity.x) < character->get_max_speed()) {
+        new_velocity.x += sign_of(direction.x) * max_acc;
     }
 
-    new_velocity      = new_acc * _dt;
-    auto displacement = new_velocity * _dt;
-    try_moving(displacement, character)
-    // for (unsigned int i = 0; i < m_players.size(); ++i) {
+    if (direction.y == 0 && std::abs(new_velocity.y) > 0.0001) {
+        new_velocity.y -= sign_of(new_velocity.y) * max_acc;
+    }
+    else if (direction.y != 0 && std::abs(new_velocity.y) < character->get_max_speed()) {
+        new_velocity.y += sign_of(direction.y) * max_acc;
+    }
 
-    //     setBodyPositionInfo(i);
+    // otherwise speed unchanged
+    character->set_current_velocity(new_velocity);
+    auto displacement = static_cast<sf::Vector2i>(new_velocity * _dt);
+    if (can_move(displacement, character->get_boundaries())) {
+        character->move(displacement);
+    }
+}
 
-    //     m_players[i]->SetMovementX(0);
-    //     m_players[i]->SetMovementY(0);
-
-    //     float movementY = m_players[i]->GetVelocityY() * delta;
-    //     float movementX = m_players[i]->GetVelocityX() * delta;
-    // }
+// find some std lib to do this...
+int PhysicsEngine::sign_of(float const number)
+{
+    if (std::abs(number) > 0.0001)
+        return std::abs(number) / number;
+    else
+        return 0;
 }
 
 }  // namespace explorer

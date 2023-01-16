@@ -19,15 +19,17 @@ public:
 
     void init(std::shared_ptr<Location> location);
 
-    void try_moving(sf::Vector2i const& direction, std::shared_ptr<Character> character);
     void update(sf::Vector2i const& direction, std::shared_ptr<Character> character);
 
 private:
+    bool can_move(sf::Vector2i const& displacement, sf::FloatRect const& character_boundary);
+
+    int sign_of(float const number);
     /// Logical level representation
     std::shared_ptr<Location> _location;
 
-    // dt at 60fps in ms
-    int const _dt{17};
+    // dt at 30fps in s
+    float const _dt{0.033};
 };
 
 }  // namespace explorer

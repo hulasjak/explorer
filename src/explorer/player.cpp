@@ -7,8 +7,8 @@ Player::Player() {}
 void Player::spawn(std::string name, sf::Vector2i const& start_pose)
 {
     set_sprite(start_pose);
-    _name       = name;
-    _move_speed = 5;
+    _name      = name;
+    _max_speed = 100;
 }
 
 void Player::set_sprite(sf::Vector2i const& start_pose)
