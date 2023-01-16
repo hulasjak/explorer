@@ -134,6 +134,7 @@ bool Location::is_position_free(sf::Vector2i const& position) const
     int tile_y = position.y / (_tile_size * _scaling);
     return _layout[tile_y][tile_x];
 }
+
 bool Location::is_on_finish(sf::FloatRect const& position) const
 {
     return _finish_stairs.getGlobalBounds().intersects(position);

@@ -17,26 +17,26 @@ bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect con
 
     if (displacement.x > 0) {
         corner1.x = character_boundary.left + character_boundary.width + displacement.x;
-        corner1.y = character_boundary.top;
+        corner1.y = character_boundary.top + displacement.y;
         corner2.x = corner1.x;
-        corner2.y = character_boundary.top + character_boundary.height;
+        corner2.y = corner1.y + character_boundary.height;
     }
     else if (displacement.x < 0) {
         corner1.x = character_boundary.left + displacement.x;
-        corner1.y = character_boundary.top;
+        corner1.y = character_boundary.top + displacement.y;
         corner2.x = corner1.x;
-        corner2.y = character_boundary.top + character_boundary.height;
+        corner2.y = corner1.y + character_boundary.height;
     }
     if (displacement.y > 0) {
-        corner1.x = character_boundary.left;
+        corner1.x = character_boundary.left + displacement.x;
         corner1.y = character_boundary.top + character_boundary.height + displacement.y;
-        corner2.x = character_boundary.left + character_boundary.width;
+        corner2.x = corner1.x + character_boundary.width;
         corner2.y = corner1.y;
     }
     else if (displacement.y < 0) {
-        corner1.x = character_boundary.left;
+        corner1.x = character_boundary.left + displacement.x;
         corner1.y = character_boundary.top + displacement.y;
-        corner2.x = character_boundary.left + character_boundary.width;
+        corner2.x = corner1.x + character_boundary.width;
         corner2.y = corner1.y;
     }
 
@@ -52,7 +52,7 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     int max_acc       = 20;
 
     // slowing down
-    if (direction.x == 0 && std::abs(new_velocity.x) > 0.0001) {
+    if (sign_of(direction.x) != sign_of(new_velocity.x) && std::abs(new_velocity.x) > 0.0001) {
         new_velocity.x -= sign_of(new_velocity.x) * max_acc;
     }
     // accelerating
@@ -60,7 +60,7 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
         new_velocity.x += sign_of(direction.x) * max_acc;
     }
 
-    if (direction.y == 0 && std::abs(new_velocity.y) > 0.0001) {
+    if (sign_of(direction.y) != sign_of(new_velocity.y) && std::abs(new_velocity.y) > 0.0001) {
         new_velocity.y -= sign_of(new_velocity.y) * max_acc;
     }
     else if (direction.y != 0 && std::abs(new_velocity.y) < character->get_max_speed()) {
