@@ -5,7 +5,6 @@
 namespace explorer {
 GameManager::GameManager(/* args */)
 {
-    // _current_location = std::make_shared<Location>();
     _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1600, 1000),
                                                  "explorer",
                                                  sf::Style::Close | sf::Style::Titlebar);
@@ -14,10 +13,7 @@ GameManager::GameManager(/* args */)
     _player           = std::make_shared<Player>();
     _goblin           = std::make_shared<Enemy>();
 
-    _current_location->load_level(_current_level);
-    _player->spawn("bobo", _current_location->get_start_position());
-    _goblin->spawn("goblin", _current_location->get_start_position());
-    _physics.init(_current_location);
+    new_turn();
 }
 
 void GameManager::poll_events()
@@ -51,13 +47,11 @@ void GameManager::poll_events()
 void GameManager::update()
 {
     poll_events();
-    // if (_command_move.x || _command_move.y) {
-    // _command_move.x = 1;
-    // _command_move.y = 1;
+
     _physics.update(_command_move, _player);
     _command_move.x = 0;
     _command_move.y = 0;
-    // }
+
     if (_current_location->is_on_finish(_player->get_boundaries())) {
         new_turn();
     }
@@ -65,24 +59,20 @@ void GameManager::update()
 
 void GameManager::new_turn()
 {
-    _current_location->load_level(++_current_level);
-    _player->spawn("ba", _current_location->get_start_position());
+    _current_location->load_level(_current_level);
+    _player->spawn(_current_location->get_start_position());
+    _goblin->spawn(_current_location->get_start_position());
+    _physics.init(_current_location);
+    _current_level++;
 }
 
 void GameManager::render()
 {
-    // for (size_t i = 0; i < _players.size(); i++) {
-    //     _ui.update_players(prepare_players(i).str(), i == _active_player, i);
-    // }
     _window->draw(*_current_location.get());
     _window->draw(*_player.get());
-    // for (auto&& enemy : _enemies) {
     _window->draw(*_goblin.get());
-    // }
 
-    // _ui.update_used_letters(_word.get_used_letters());
     _window->display();
-    // _ui.render();
 }
 
 bool GameManager::is_running() const

@@ -9,11 +9,6 @@ void Character::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(_sprite);
 }
 
-std::string Character::get_name()
-{
-    return _name;
-}
-
 int Character::get_max_speed() const
 {
     return _max_speed;
@@ -24,22 +19,17 @@ sf::Vector2f Character::get_current_velocity() const
     return _current_velocity;
 }
 
-void Character::set_current_velocity(sf::Vector2f updated_velocity)
+void Character::set_current_velocity(sf::Vector2f const& updated_velocity)
 {
     _current_velocity = updated_velocity;
 }
 
-sf::Vector2i Character::get_current_acc() const
+int Character::get_max_acc() const
 {
-    return _current_acc;
+    return _max_acc;
 }
 
-void Character::set_current_acc(sf::Vector2i updated_acc)
-{
-    _current_acc = updated_acc;
-}
-
-void Character::move(sf::Vector2i direction, int speed)
+void Character::move(sf::Vector2i const& direction, int speed)
 {
     _sprite.move(direction.x * speed, direction.y * speed);
 }

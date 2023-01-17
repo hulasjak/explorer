@@ -13,7 +13,7 @@ public:
     Enemy();
     ~Enemy() = default;
 
-    virtual void spawn(std::string name, sf::Vector2i const& start_pose) override;
+    virtual void spawn(sf::Vector2i const& start_pose) override;
 
 private:
     virtual void set_sprite(sf::Vector2i const& start_pose) override;

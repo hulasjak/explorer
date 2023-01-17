@@ -19,19 +19,24 @@ public:
     GameManager(/* args */);
     ~GameManager() = default;
 
+    // main game logic loop
     void update();
+
+    // main rendering loop
     void render();
 
-    void poll_events();
-
+    // check if the game is still running
     bool is_running() const;
 
 private:
+    // read events
+    void poll_events();
+
+    // prepare a new level
     void new_turn();
 
     std::shared_ptr<Location> _current_location;
     std::shared_ptr<Player> _player;
-    // std::vector<Character> _enemies;
     std::shared_ptr<Enemy> _goblin;
     PhysicsEngine _physics;
 
