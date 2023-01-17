@@ -68,10 +68,13 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     }
 
     // otherwise speed unchanged
-    character->set_current_velocity(new_velocity);
     auto displacement = static_cast<sf::Vector2i>(new_velocity * _dt);
     if (can_move(displacement, character->get_boundaries())) {
         character->move(displacement);
+        character->set_current_velocity(new_velocity);
+    }
+    else {
+        character->set_current_velocity({0, 0});
     }
 }
 
