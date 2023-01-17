@@ -12,7 +12,7 @@ public:
     Player();
     ~Player() = default;
 
-    virtual void spawn(std::string name, sf::Vector2i const& start_pose) override;
+    virtual void spawn(sf::Vector2i const& start_pose) override;
     bool get_win() const;
     void set_win(bool state);
 

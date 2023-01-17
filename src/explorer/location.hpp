@@ -13,7 +13,7 @@ public:
     Location(/* args */);
     ~Location();
 
-    void load_level(int const level);
+    void load_level(int level);
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -30,9 +30,6 @@ private:
     std::vector<sf::Texture> _floor_textures;
     std::vector<sf::Texture> _wall_textures;
     sf::Texture _stair_texture;
-
-    int _size_x;
-    int _size_y;
 
     static constexpr float _scaling{2.0};
     static constexpr int _tile_size{16};

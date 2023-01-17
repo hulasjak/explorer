@@ -24,15 +24,16 @@ void Location::load_level(int const level)
 {
     std::string resource_path = "resources/locations/location" + std::to_string(level) + ".txt";
 
+    sf::Vector2i number_of_tiles;
+
     std::fstream file;
-    std::cout << resource_path << "\n";
 
     file.open(resource_path, std::ios_base::in);
     if (!file.is_open())
         throw std::runtime_error("error to open \n");
 
-    file >> _size_x;
-    file >> _size_y;
+    file >> number_of_tiles.x;
+    file >> number_of_tiles.y;
 
     file >> _start_pose.x;
     file >> _start_pose.y;
@@ -40,27 +41,27 @@ void Location::load_level(int const level)
     file >> _finish_pose.x;
     file >> _finish_pose.y;
 
-    _size_x *= 2;
-    _size_y *= 2;
+    // scale the map
+    number_of_tiles *= 2;
 
-    _layout.resize(_size_y);
-    _sprites.resize(_size_y);
-    for (unsigned int i = 0; i < _size_y; ++i) {
-        _layout[i].resize(_size_x);
-        _sprites[i].resize(_size_x);
+    _layout.resize(number_of_tiles.x);
+    _sprites.resize(number_of_tiles.x);
+    for (unsigned int i = 0; i < number_of_tiles.y; ++i) {
+        _layout[i].resize(number_of_tiles.x);
+        _sprites[i].resize(number_of_tiles.y);
     }
 
     int raw;
     // find better way to scale the map
-    for (unsigned int i = 0; i < _size_y; ++i) {
+    for (unsigned int i = 0; i < number_of_tiles.y; ++i) {
         if (i % 2 != 0) {
             _layout[i] = _layout[i - 1];
-            for (unsigned int j = 0; j < _size_x; ++j) {
+            for (unsigned int j = 0; j < number_of_tiles.x; ++j) {
                 set_tile(j, i, _tile_size * _scaling, _layout[i][j]);
             }
         }
         else {
-            for (unsigned int j = 0; j < _size_x; ++j) {
+            for (unsigned int j = 0; j < number_of_tiles.x; ++j) {
                 if (j % 2 == 0) {
                     file >> raw;
                 }

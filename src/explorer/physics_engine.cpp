@@ -48,8 +48,8 @@ bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect con
 
 void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Character> character)
 {
-    auto new_velocity = character->get_current_velocity();
-    int max_acc       = 20;
+    auto new_velocity  = character->get_current_velocity();
+    const auto max_acc = character->get_max_acc();
 
     // slowing down
     if (sign_of(direction.x) != sign_of(new_velocity.x) && std::abs(new_velocity.x) > 0.0001) {
@@ -68,7 +68,9 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     }
 
     // otherwise speed unchanged
+
     auto displacement = static_cast<sf::Vector2i>(new_velocity * _dt);
+    // TODO fix the sticking to the walls
     if (can_move(displacement, character->get_boundaries())) {
         character->move(displacement);
         character->set_current_velocity(new_velocity);
