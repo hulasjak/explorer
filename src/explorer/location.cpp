@@ -44,11 +44,11 @@ void Location::load_level(int const level)
     // scale the map
     number_of_tiles *= 2;
 
-    _layout.resize(number_of_tiles.x);
-    _sprites.resize(number_of_tiles.x);
+    _layout.resize(number_of_tiles.y);
+    _sprites.resize(number_of_tiles.y);
     for (unsigned int i = 0; i < number_of_tiles.y; ++i) {
         _layout[i].resize(number_of_tiles.x);
-        _sprites[i].resize(number_of_tiles.y);
+        _sprites[i].resize(number_of_tiles.x);
     }
 
     int raw;
