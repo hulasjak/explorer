@@ -7,7 +7,8 @@ Player::Player() {}
 void Player::spawn(sf::Vector2i const& start_pose)
 {
     set_sprite(start_pose);
-    _max_speed = 100;
+    _max_speed = 200;
+    _max_acc   = 30;
 }
 
 void Player::set_sprite(sf::Vector2i const& start_pose)

@@ -19,7 +19,7 @@ public:
     sf::Vector2f get_current_velocity() const;
     void set_current_velocity(sf::Vector2f const& updated_velocity);
 
-    void move(sf::Vector2i const& direction, int speed = 2);
+    void move(sf::Vector2i const& direction);
 
     sf::FloatRect get_boundaries() const;
 

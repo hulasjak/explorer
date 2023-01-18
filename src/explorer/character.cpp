@@ -29,9 +29,9 @@ int Character::get_max_acc() const
     return _max_acc;
 }
 
-void Character::move(sf::Vector2i const& direction, int speed)
+void Character::move(sf::Vector2i const& direction)
 {
-    _sprite.move(direction.x * speed, direction.y * speed);
+    _sprite.move(direction.x, direction.y);
 }
 
 sf::FloatRect Character::get_boundaries() const
