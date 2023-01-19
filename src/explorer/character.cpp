@@ -39,4 +39,9 @@ sf::FloatRect Character::get_boundaries() const
     return _sprite.getGlobalBounds();
 }
 
+bool Character::check_contact(sf::FloatRect const& external_boundary) const
+{
+    return _sprite.getGlobalBounds().intersects(external_boundary);
+}
+
 }  // namespace explorer

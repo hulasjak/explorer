@@ -3,6 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#define ROWS 30
+#define COLS 42
+
 namespace explorer {
 
 class Location : public sf::Drawable
@@ -23,8 +26,11 @@ public:
     bool is_position_free(sf::Vector2i const& position) const;
     bool is_on_finish(sf::FloatRect const& position) const;
 
+    std::array<std::array<int, COLS>, ROWS> get_layout() const;
+    sf::Vector2i get_tile_number(sf::Vector2i const& position) const;
+
 private:
-    void set_tile(int position_x, int position_y, int size, TILE_TYPE type);
+    void set_tile(int position_x, int position_y, int size, int type);
     void set_stairs();
 
     std::vector<sf::Texture> _floor_textures;
@@ -38,9 +44,8 @@ private:
     sf::Vector2i _finish_pose;
 
     sf::Font font;
-
-    std::vector<std::vector<TILE_TYPE> > _layout;
-    std::vector<std::vector<sf::Sprite> > _sprites;
+    std::array<std::array<int, COLS>, ROWS> _layout;
+    std::vector<std::vector<sf::Sprite>> _sprites;
     sf::Sprite _start_stairs;
     sf::Sprite _finish_stairs;
 };

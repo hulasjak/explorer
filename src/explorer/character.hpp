@@ -23,6 +23,8 @@ public:
 
     sf::FloatRect get_boundaries() const;
 
+    bool check_contact(sf::FloatRect const& external_boundary) const;
+
 protected:
     virtual void set_sprite(sf::Vector2i const& start_pose) = 0;
 

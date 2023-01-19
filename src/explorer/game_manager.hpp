@@ -11,6 +11,7 @@
 #include "explorer/character.hpp"
 #include "explorer/physics_engine.hpp"
 #include "explorer/enemy.hpp"
+#include "explorer/a_star_impl.hpp"
 
 namespace explorer {
 class GameManager
@@ -38,6 +39,7 @@ private:
     std::shared_ptr<Location> _current_location;
     std::shared_ptr<Player> _player;
     std::shared_ptr<Enemy> _goblin;
+    std::shared_ptr<AStar<ROWS, COLS>> _astar;
     PhysicsEngine _physics;
 
     sf::Event _event;

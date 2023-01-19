@@ -24,16 +24,11 @@ void Location::load_level(int const level)
 {
     std::string resource_path = "resources/locations/location" + std::to_string(level) + ".txt";
 
-    sf::Vector2i number_of_tiles;
-
     std::fstream file;
 
     file.open(resource_path, std::ios_base::in);
     if (!file.is_open())
         throw std::runtime_error("error to open \n");
-
-    file >> number_of_tiles.x;
-    file >> number_of_tiles.y;
 
     file >> _start_pose.x;
     file >> _start_pose.y;
@@ -41,31 +36,28 @@ void Location::load_level(int const level)
     file >> _finish_pose.x;
     file >> _finish_pose.y;
 
-    // scale the map
-    number_of_tiles *= 2;
-
-    _layout.resize(number_of_tiles.y);
-    _sprites.resize(number_of_tiles.y);
-    for (unsigned int i = 0; i < number_of_tiles.y; ++i) {
-        _layout[i].resize(number_of_tiles.x);
-        _sprites[i].resize(number_of_tiles.x);
+    // _layout.resize(ROWS);
+    _sprites.resize(ROWS);
+    for (unsigned int i = 0; i < ROWS; ++i) {
+        // _layout[i].resize(COLS);
+        _sprites[i].resize(COLS);
     }
 
     int raw;
     // find better way to scale the map
-    for (unsigned int i = 0; i < number_of_tiles.y; ++i) {
+    for (unsigned int i = 0; i < ROWS; ++i) {
         if (i % 2 != 0) {
             _layout[i] = _layout[i - 1];
-            for (unsigned int j = 0; j < number_of_tiles.x; ++j) {
+            for (unsigned int j = 0; j < COLS; ++j) {
                 set_tile(j, i, _tile_size * _scaling, _layout[i][j]);
             }
         }
         else {
-            for (unsigned int j = 0; j < number_of_tiles.x; ++j) {
+            for (unsigned int j = 0; j < COLS; ++j) {
                 if (j % 2 == 0) {
                     file >> raw;
                 }
-                _layout[i][j] = static_cast<TILE_TYPE>(raw);
+                _layout[i][j] = raw;
                 set_tile(j, i, _tile_size * _scaling, _layout[i][j]);
             }
         }
@@ -84,17 +76,17 @@ void Location::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(_finish_stairs);
 }
 
-void Location::set_tile(int position_x, int position_y, int size, TILE_TYPE type)
+void Location::set_tile(int position_x, int position_y, int size, int type)
 {
 
     _layout.size();
     sf::Texture texture;
     switch (type) {
-        case TILE_TYPE::FLOOR:;
+        case 1:
             _sprites[position_y][position_x].setTexture(_floor_textures[rand() % 8]);
             break;
 
-        case TILE_TYPE::WALL:
+        case 0:
             _sprites[position_y][position_x].setTexture(_wall_textures[rand() % 2]);
             break;
 
@@ -136,9 +128,22 @@ bool Location::is_position_free(sf::Vector2i const& position) const
     return _layout[tile_y][tile_x];
 }
 
+sf::Vector2i Location::get_tile_number(sf::Vector2i const& position) const
+{
+    sf::Vector2i n;
+    n.x = position.x / (_tile_size * _scaling);
+    n.y = position.y / (_tile_size * _scaling);
+    return n;
+}
+
 bool Location::is_on_finish(sf::FloatRect const& position) const
 {
     return _finish_stairs.getGlobalBounds().intersects(position);
+}
+
+std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
+{
+    return _layout;
 }
 
 }  // namespace explorer
