@@ -29,6 +29,8 @@ public:
     std::array<std::array<int, COLS>, ROWS> get_layout() const;
     sf::Vector2i get_tile_number(sf::Vector2i const& position) const;
 
+    void light_up(sf::FloatRect const& boundry);
+
 private:
     void set_tile(int position_x, int position_y, int size, int type);
     void set_stairs();
@@ -45,7 +47,7 @@ private:
 
     sf::Font font;
     std::array<std::array<int, COLS>, ROWS> _layout;
-    std::vector<std::vector<sf::Sprite>> _sprites;
+    std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
     sf::Sprite _start_stairs;
     sf::Sprite _finish_stairs;
 };

@@ -59,7 +59,9 @@ void GameManager::update()
     sf::Vector2i player_pose(_player->get_boundaries().left, _player->get_boundaries().top);
     auto pl        = _current_location->get_tile_number(player_pose);
     auto next_move = _astar->aStarSearch(gb, pl);
-    _physics.update(next_move, _goblin);
+    // _physics.update(next_move, _goblin);
+    _goblin->move(next_move);
+    _current_location->light_up(_player->get_boundaries());
 
     if (_current_location->is_on_finish(_player->get_boundaries())) {
         new_turn();

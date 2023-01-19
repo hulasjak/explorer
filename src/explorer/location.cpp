@@ -37,11 +37,6 @@ void Location::load_level(int const level)
     file >> _finish_pose.y;
 
     // _layout.resize(ROWS);
-    _sprites.resize(ROWS);
-    for (unsigned int i = 0; i < ROWS; ++i) {
-        // _layout[i].resize(COLS);
-        _sprites[i].resize(COLS);
-    }
 
     int raw;
     // find better way to scale the map
@@ -144,6 +139,29 @@ bool Location::is_on_finish(sf::FloatRect const& position) const
 std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
 {
     return _layout;
+}
+
+void Location::light_up(sf::FloatRect const& boundary)
+{
+    sf::FloatRect light_bound;
+    light_bound.top    = boundary.top - boundary.height;
+    light_bound.left   = boundary.left - boundary.width;
+    light_bound.width  = boundary.width * 3;
+    light_bound.height = boundary.height * 3;
+
+    // auto n = get_tile_number({light_bound.top, light_bound.left});
+    // _sprites[n.x][n.y].setColor(sf::Color::Black);
+    for (int y = 0; y < _sprites.size(); ++y) {
+        for (int x = 0; x < _sprites[0].size(); ++x) {
+            if (light_bound.intersects(_sprites[y][x].getGlobalBounds())) {
+                _sprites[y][x].setColor(sf::Color::White);
+            }
+            else {
+                _sprites[y][x].setColor(sf::Color::Black);
+            }
+        }
+    }
+    // _sprites[n.y][n.x].setColor(sf::Color::Transparent);
 }
 
 }  // namespace explorer

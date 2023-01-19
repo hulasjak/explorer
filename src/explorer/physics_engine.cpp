@@ -15,6 +15,7 @@ bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect con
     sf::Vector2i corner1;
     sf::Vector2i corner2;
 
+    // todo alow to slide
     if (displacement.x > 0) {
         corner1.x = character_boundary.left + character_boundary.width + displacement.x;
         corner1.y = character_boundary.top + displacement.y;

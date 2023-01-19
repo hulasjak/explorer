@@ -12,6 +12,12 @@ add_executable(${PROJECT_NAME}
                character.cpp
                enemy.cpp)
 
+# add_executable(a_star 
+#                 a_star_impl.cpp)
+
+# target_include_directories(a_star PUBLIC
+#                 ${PROJECT_SOURCE_DIR}/src)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
 ${PROJECT_SOURCE_DIR}/src
 ${PROJECT_SOURCE_DIR}/SFML
@@ -29,5 +35,6 @@ MESSAGE(STATUS ${CMAKE_BINARY_DIR})
 
 install(TARGETS 
             ${PROJECT_NAME}
+            # a_star
         DESTINATION 
             ${CMAKE_BINARY_DIR})
