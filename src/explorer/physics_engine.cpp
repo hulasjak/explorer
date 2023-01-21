@@ -79,6 +79,7 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     can_move(displacement, character->get_boundaries());
     character->move(displacement);
     character->set_current_velocity(new_velocity);
+    character->animate();
 }
 
 // find some std lib to do this...

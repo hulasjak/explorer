@@ -14,8 +14,7 @@ void Player::spawn(sf::Vector2i const& start_pose)
 
 void Player::set_sprite(sf::Vector2i const& start_pose)
 {
-    _texture.loadFromFile("resources/graphics/heroes/knight/knight_idle_anim_f0.png");
-    _sprite.setTexture(_texture, true);
+    set_animation("resources/graphics/heroes/knight/knight_idle_anim_f", 5);
     _sprite.setScale(2.0, 2.0);
     _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
 }

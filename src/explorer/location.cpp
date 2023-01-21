@@ -144,10 +144,10 @@ std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
 void Location::light_up(sf::FloatRect const& boundary)
 {
     sf::FloatRect light_bound;
-    light_bound.top    = boundary.top - boundary.height;
-    light_bound.left   = boundary.left - boundary.width;
-    light_bound.width  = boundary.width * 3;
-    light_bound.height = boundary.height * 3;
+    light_bound.top    = boundary.top - boundary.height * 2;
+    light_bound.left   = boundary.left - boundary.width * 2;
+    light_bound.width  = boundary.width * 5;
+    light_bound.height = boundary.height * 5;
 
     // auto n = get_tile_number({light_bound.top, light_bound.left});
     // _sprites[n.x][n.y].setColor(sf::Color::Black);

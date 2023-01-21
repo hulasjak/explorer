@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 namespace explorer {
 
@@ -25,14 +26,21 @@ public:
     sf::Vector2i get_center() const;
 
     bool check_contact(sf::FloatRect const& external_boundary) const;
+    void animate();
 
 protected:
     virtual void set_sprite(sf::Vector2i const& start_pose) = 0;
+    void set_animation(std::string const& base_path, size_t number);
+
+    std::chrono::time_point<std::chrono::system_clock> _last_animation;
+    int _animated_texture{0};
 
     int _max_speed;
     int _max_acc;
     sf::Sprite _sprite;
     sf::Texture _texture;
+    std::vector<sf::Texture> _textures;
+
     sf::Vector2f _current_velocity;
     sf::Vector2i _current_acc;
 };

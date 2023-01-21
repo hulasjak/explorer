@@ -12,7 +12,6 @@ public:
     ~Enemy() = default;
 
     virtual void spawn(sf::Vector2i const& start_pose) override;
-    void follow_player(sf::Vector2i const& player_pose);
 
 private:
     virtual void set_sprite(sf::Vector2i const& start_pose) override;

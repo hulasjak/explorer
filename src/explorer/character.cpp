@@ -1,5 +1,6 @@
 #include "explorer/character.hpp"
 
+using namespace std::chrono_literals;
 namespace explorer {
 
 Character::Character() {}
@@ -55,6 +56,29 @@ sf::Vector2i Character::get_center() const
 bool Character::check_contact(sf::FloatRect const& external_boundary) const
 {
     return _sprite.getGlobalBounds().intersects(external_boundary);
+}
+
+void Character::set_animation(std::string const& base_path, size_t number)
+{
+    _textures.resize(number);
+    for (size_t i = 0; i < number; i++) {
+        if (!_textures[i].loadFromFile(base_path + std::to_string(i) + ".png")) {
+            throw std::runtime_error("Failed to load texture: " + base_path);
+        }
+    }
+}
+
+void Character::animate()
+{
+    auto now = std::chrono::system_clock::now();
+    if (now - _last_animation > 100ms) {
+        _sprite.setTexture(_textures[_animated_texture]);
+        _last_animation = std::chrono::system_clock::now();
+
+        if (_animated_texture++ >= _textures.size()) {
+            _animated_texture = 0;
+        }
+    }
 }
 
 }  // namespace explorer
