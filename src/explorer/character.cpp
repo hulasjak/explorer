@@ -75,7 +75,7 @@ void Character::animate()
         _sprite.setTexture(_textures[_animated_texture]);
         _last_animation = std::chrono::system_clock::now();
 
-        if (_animated_texture++ >= _textures.size()) {
+        if (++_animated_texture >= _textures.size()) {
             _animated_texture = 0;
         }
     }
