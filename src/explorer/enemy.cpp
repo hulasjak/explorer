@@ -12,7 +12,7 @@ void Enemy::spawn(sf::Vector2i const& start_pose)
 
 void Enemy::set_sprite(sf::Vector2i const& start_pose)
 {
-    set_animation("resources/graphics/enemies/goblin/goblin_idle_anim_f", 4);
+    set_animation("resources/graphics/enemies/goblin/goblin", 5);
 
     _sprite.setScale(2.0, 2.0);
     _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);

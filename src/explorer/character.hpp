@@ -39,7 +39,8 @@ protected:
     int _max_acc;
     sf::Sprite _sprite;
     sf::Texture _texture;
-    std::vector<sf::Texture> _textures;
+    std::vector<sf::Texture> _idle_textures;
+    std::vector<sf::Texture> _active_textures;
 
     sf::Vector2f _current_velocity;
     sf::Vector2i _current_acc;

@@ -60,9 +60,13 @@ bool Character::check_contact(sf::FloatRect const& external_boundary) const
 
 void Character::set_animation(std::string const& base_path, size_t number)
 {
-    _textures.resize(number);
+    _idle_textures.resize(number);
+    _active_textures.resize(number);
     for (size_t i = 0; i < number; i++) {
-        if (!_textures[i].loadFromFile(base_path + std::to_string(i) + ".png")) {
+        if (!_idle_textures[i].loadFromFile(base_path + "_idle_anim_f" + std::to_string(i) + ".png")) {
+            throw std::runtime_error("Failed to load texture: " + base_path);
+        }
+        if (!_active_textures[i].loadFromFile(base_path + "_run_anim_f" + std::to_string(i) + ".png")) {
             throw std::runtime_error("Failed to load texture: " + base_path);
         }
     }
@@ -71,13 +75,18 @@ void Character::set_animation(std::string const& base_path, size_t number)
 void Character::animate()
 {
     auto now = std::chrono::system_clock::now();
-    if (now - _last_animation > 100ms) {
-        _sprite.setTexture(_textures[_animated_texture]);
-        _last_animation = std::chrono::system_clock::now();
 
-        if (++_animated_texture >= _textures.size()) {
+    if (now - _last_animation > 100ms) {
+        if (_current_velocity.x || _current_velocity.y) {
+            _sprite.setTexture(_active_textures[_animated_texture]);
+        }
+        else {
+            _sprite.setTexture(_idle_textures[_animated_texture]);
+        }
+        if (++_animated_texture >= _idle_textures.size()) {
             _animated_texture = 0;
         }
+        _last_animation = std::chrono::system_clock::now();
     }
 }
 
