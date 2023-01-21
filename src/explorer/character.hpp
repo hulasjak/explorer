@@ -22,6 +22,7 @@ public:
     void move(sf::Vector2i const& direction);
 
     sf::FloatRect get_boundaries() const;
+    sf::Vector2i get_center() const;
 
     bool check_contact(sf::FloatRect const& external_boundary) const;
 

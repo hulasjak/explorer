@@ -9,6 +9,7 @@ void Player::spawn(sf::Vector2i const& start_pose)
     set_sprite(start_pose);
     _max_speed = 200;
     _max_acc   = 30;
+    _lives     = 3;
 }
 
 void Player::set_sprite(sf::Vector2i const& start_pose)
@@ -27,6 +28,15 @@ bool Player::get_win() const
 void Player::set_win(bool state)
 {
     _won = state;
+}
+
+bool Player::try_to_kill()
+{
+    if (_lives > 0) {
+        _lives -= 1;
+        return true;
+    }
+    return false;
 }
 
 }  // namespace explorer

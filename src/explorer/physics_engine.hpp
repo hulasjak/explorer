@@ -22,7 +22,7 @@ public:
     void update(sf::Vector2i const& direction, std::shared_ptr<Character> character);
 
 private:
-    bool can_move(sf::Vector2i const& displacement, sf::FloatRect const& character_boundary);
+    void can_move(sf::Vector2i& displacement, sf::FloatRect const& character_boundary);
 
     int sign_of(float const number);
     /// Logical level representation

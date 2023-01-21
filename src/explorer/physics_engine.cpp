@@ -10,24 +10,29 @@ void PhysicsEngine::init(std::shared_ptr<Location> location)
     _location = location;
 }
 
-bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect const& character_boundary)
+void PhysicsEngine::can_move(sf::Vector2i& displacement, sf::FloatRect const& character_boundary)
 {
     sf::Vector2i corner1;
     sf::Vector2i corner2;
 
     // todo alow to slide
+    // check pure x movement
     if (displacement.x > 0) {
         corner1.x = character_boundary.left + character_boundary.width + displacement.x;
-        corner1.y = character_boundary.top + displacement.y;
+        corner1.y = character_boundary.top;
         corner2.x = corner1.x;
         corner2.y = corner1.y + character_boundary.height;
     }
     else if (displacement.x < 0) {
         corner1.x = character_boundary.left + displacement.x;
-        corner1.y = character_boundary.top + displacement.y;
+        corner1.y = character_boundary.top;
         corner2.x = corner1.x;
         corner2.y = corner1.y + character_boundary.height;
     }
+    if (!_location->is_position_free(corner1) || !_location->is_position_free(corner2)) {
+        displacement.x = 0;
+    }
+
     if (displacement.y > 0) {
         corner1.x = character_boundary.left + displacement.x;
         corner1.y = character_boundary.top + character_boundary.height + displacement.y;
@@ -41,10 +46,9 @@ bool PhysicsEngine::can_move(sf::Vector2i const& displacement, sf::FloatRect con
         corner2.y = corner1.y;
     }
 
-    if (_location->is_position_free(corner1) && _location->is_position_free(corner2)) {
-        return true;
+    if (!_location->is_position_free(corner1) || !_location->is_position_free(corner2)) {
+        displacement.y = 0;
     }
-    return false;
 }
 
 void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Character> character)
@@ -71,14 +75,10 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     // otherwise speed unchanged
 
     auto displacement = static_cast<sf::Vector2i>(new_velocity * _dt);
-    // TODO fix the sticking to the walls
-    if (can_move(displacement, character->get_boundaries())) {
-        character->move(displacement);
-        character->set_current_velocity(new_velocity);
-    }
-    else {
-        character->set_current_velocity({0, 0});
-    }
+
+    can_move(displacement, character->get_boundaries());
+    character->move(displacement);
+    character->set_current_velocity(new_velocity);
 }
 
 // find some std lib to do this...

@@ -51,16 +51,11 @@ void GameManager::update()
     _physics.update(_command_move, _player);
     _command_move.x = 0;
     _command_move.y = 0;
-    sf::Vector2i goblin_pose;
-    goblin_pose.x = _goblin->get_boundaries().left;
-    goblin_pose.y = _goblin->get_boundaries().top;
 
-    auto gb = _current_location->get_tile_number(goblin_pose);
-    sf::Vector2i player_pose(_player->get_boundaries().left, _player->get_boundaries().top);
-    auto pl        = _current_location->get_tile_number(player_pose);
+    auto gb        = _current_location->get_tile_number(_goblin->get_center());
+    auto pl        = _current_location->get_tile_number(_player->get_center());
     auto next_move = _astar->aStarSearch(gb, pl);
-    // _physics.update(next_move, _goblin);
-    _goblin->move(next_move);
+    _physics.update(next_move, _goblin);
     _current_location->light_up(_player->get_boundaries());
 
     if (_current_location->is_on_finish(_player->get_boundaries())) {

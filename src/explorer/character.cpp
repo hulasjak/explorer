@@ -36,7 +36,20 @@ void Character::move(sf::Vector2i const& direction)
 
 sf::FloatRect Character::get_boundaries() const
 {
-    return _sprite.getGlobalBounds();
+    auto bound = _sprite.getGlobalBounds();
+    bound.left += 10;
+    bound.top += 10;
+    bound.width -= 20;
+    bound.height -= 20;
+    return bound;
+}
+
+sf::Vector2i Character::get_center() const
+{
+    sf::Vector2i center;
+    center.x = get_boundaries().left + get_boundaries().width / 2;
+    center.y = get_boundaries().top + get_boundaries().height / 2;
+    return center;
 }
 
 bool Character::check_contact(sf::FloatRect const& external_boundary) const
