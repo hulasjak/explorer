@@ -10,7 +10,8 @@ add_executable(${PROJECT_NAME}
                game_manager.cpp
                physics_engine.cpp
                character.cpp
-               enemy.cpp)
+               enemy.cpp
+               side_panel)
 
 # add_executable(a_star 
 #                 a_star_impl.cpp)
