@@ -17,6 +17,7 @@ void Player::set_sprite(sf::Vector2i const& start_pose)
     set_animation("resources/graphics/heroes/knight/knight", 5);
     _sprite.setScale(2.0, 2.0);
     _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
+    _start_pose = start_pose;
 }
 
 bool Player::get_win() const
@@ -33,9 +34,15 @@ bool Player::try_to_kill()
 {
     if (_lives > 0) {
         _lives -= 1;
+        _sprite.setPosition(_start_pose.x * 64, _start_pose.y * 64);
         return true;
     }
     return false;
+}
+
+int Player::get_lives() const
+{
+    return _lives;
 }
 
 }  // namespace explorer

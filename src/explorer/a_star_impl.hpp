@@ -55,26 +55,22 @@ public:
 
         // If the source is out of range
         if (!isValid(src)) {
-            printf("Source is invalid\n");
-            std::runtime_error("error");
+            std::runtime_error("Source is invalid");
         }
 
         // If the destination is out of range
         if (!isValid(dest)) {
-            printf("Destination is invalid\n");
-            std::runtime_error("error");
+            std::runtime_error("Destination is invalid");
         }
 
         // Either the source or the destination is blocked
         if (!isUnBlocked(src) || !isUnBlocked(dest)) {
-            printf("Source or the destination is blocked\n");
-            std::runtime_error("error");
+            std::runtime_error("Source or the destination is blocked");
         }
 
         // If the destination cell is the same as source cell
         if (isDestination(src, dest)) {
-            printf("We are already at the destination\n");
-            std::runtime_error("error");
+            std::runtime_error("We are already at the destination");
         }
 
         // Create a closed list and initialise it to false which
@@ -151,9 +147,7 @@ public:
                                           dest)) {  // Set the Parent of
                                                     // the destination cell
                             cellDetails[neighbour.first][neighbour.second].parent = {i, j};
-                            printf(
-                                "The destination cell is "
-                                "found\n");
+
                             auto path = tracePath(cellDetails, dest);
                             sf::Vector2i vector(path.first, path.second);
                             return vector;
@@ -236,7 +230,7 @@ private:
     // destination
     Pair tracePath(const array<array<cell, COL>, ROW>& cellDetails, const Pair& dest)
     {
-        printf("\nThe Path is ");
+        // printf("\nThe Path is ");
 
         stack<Pair> Path;
 
@@ -256,42 +250,8 @@ private:
             Path.pop();
             Pair p2 = Path.top();
 
-            printf("-> (%d,%d) ", p2.first - p1.first, p2.second - p1.second);
+            // printf("-> (%d,%d) ", p2.first - p1.first, p2.second - p1.second);
             return {p2.first - p1.first, p2.second - p1.second};
         }
     }
 };
-
-// // Driver program to test above function
-// int main()
-// {
-//     /* Description of the _grid-
-//     1--> The cell is not blocked
-//     0--> The cell is blocked */
-//     array<array<int, 10>, 9> _grid{{{{1, 0, 1, 1, 1, 1, 0, 1, 1, 1}},
-//                                    {{1, 1, 1, 0, 1, 1, 1, 0, 1, 1}},
-//                                    {{1, 1, 1, 0, 1, 1, 0, 1, 0, 1}},
-//                                    {{0, 0, 1, 0, 1, 0, 0, 0, 0, 1}},
-//                                    {{1, 1, 1, 0, 1, 1, 1, 0, 1, 0}},
-//                                    {{1, 0, 1, 1, 1, 1, 0, 1, 0, 0}},
-//                                    {{1, 0, 0, 0, 0, 1, 0, 0, 0, 1}},
-//                                    {{1, 0, 1, 1, 1, 1, 0, 1, 1, 1}},
-//                                    {{1, 1, 1, 0, 0, 0, 1, 0, 0, 1}}}};
-
-//     // Source is the left-most bottom-most corner
-//     Pair src(8, 0);
-
-//     // Destination is the left-most top-most corner
-//     Pair dest(0, 0);
-//     Pair next_move(0, 0);
-//     // while (src.first != dest.first && src.first != dest.second) {
-//     for (size_t i = 0; i < 5; i++) {
-//         next_move = aStarSearch( src, dest);
-//         src.first += next_move.first;
-//         src.second += next_move.second;
-//         cout << "\n currnet " << src.first << " " << src.second;
-//     }
-
-//     // }
-//     return 0;
-// }

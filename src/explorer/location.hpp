@@ -29,7 +29,8 @@ public:
     std::array<std::array<int, COLS>, ROWS> get_layout() const;
     sf::Vector2i get_tile_number(sf::Vector2i const& position) const;
 
-    void light_up(sf::FloatRect const& boundry);
+    void light_up(sf::FloatRect const& boundary);
+    sf::FloatRect get_light_boundary() const;
 
 private:
     void set_tile(int position_x, int position_y, int size, int type);
@@ -50,6 +51,7 @@ private:
     std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
     sf::Sprite _start_stairs;
     sf::Sprite _finish_stairs;
+    sf::FloatRect _light_boundary;
 };
 
 }  // namespace explorer

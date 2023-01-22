@@ -16,6 +16,7 @@ public:
     bool get_win() const;
     void set_win(bool state);
     bool try_to_kill();
+    int get_lives() const;
 
 private:
     void set_sprite(sf::Vector2i const& start_pose) override;

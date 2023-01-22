@@ -12,6 +12,7 @@ public:
     ~Enemy() = default;
 
     virtual void spawn(sf::Vector2i const& start_pose) override;
+    void light_up(sf::FloatRect const& boundary);
 
 private:
     virtual void set_sprite(sf::Vector2i const& start_pose) override;

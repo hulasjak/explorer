@@ -16,6 +16,15 @@ Location::Location(/* args */)
         _wall_textures[i].loadFromFile("resources/graphics/tiles/wall/wall_" + std::to_string(i + 1) + ".png");
     }
     _stair_texture.loadFromFile("resources/graphics/tiles/floor/stair_nextlevel.png");
+
+    // scale the sprites only once
+    for (int y = 0; y < _sprites.size(); ++y) {
+        for (int x = 0; x < _sprites[0].size(); ++x) {
+            _sprites[y][x].scale(_scaling, _scaling);
+        }
+    }
+    _start_stairs.scale(_scaling, _scaling);
+    _finish_stairs.scale(_scaling, _scaling);
 }
 
 Location::~Location() {}
@@ -73,9 +82,6 @@ void Location::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Location::set_tile(int position_x, int position_y, int size, int type)
 {
-
-    _layout.size();
-    sf::Texture texture;
     switch (type) {
         case 1:
             _sprites[position_y][position_x].setTexture(_floor_textures[rand() % 8]);
@@ -89,7 +95,6 @@ void Location::set_tile(int position_x, int position_y, int size, int type)
             break;
     };
     _sprites[position_y][position_x].setPosition(position_x * size, position_y * size);
-    _sprites[position_y][position_x].scale(_scaling, _scaling);
 }
 
 void Location::set_stairs()
@@ -101,9 +106,6 @@ void Location::set_stairs()
 
     _start_stairs.setPosition(_start_pose.x * _tile_size * _scaling * 2, _start_pose.y * _tile_size * _scaling * 2);
     _finish_stairs.setPosition(_finish_pose.x * _tile_size * _scaling * 2, _finish_pose.y * _tile_size * _scaling * 2);
-
-    _start_stairs.scale(_scaling, _scaling);
-    _finish_stairs.scale(_scaling, _scaling);
 }
 
 auto Location::get_start_position() const -> sf::Vector2i
@@ -143,17 +145,14 @@ std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
 
 void Location::light_up(sf::FloatRect const& boundary)
 {
-    sf::FloatRect light_bound;
-    light_bound.top    = boundary.top - boundary.height * 2;
-    light_bound.left   = boundary.left - boundary.width * 2;
-    light_bound.width  = boundary.width * 5;
-    light_bound.height = boundary.height * 5;
+    _light_boundary.top    = boundary.top - (_tile_size * _scaling) * 2;
+    _light_boundary.left   = boundary.left - (_tile_size * _scaling) * 2;
+    _light_boundary.width  = (_tile_size * _scaling) * 4;
+    _light_boundary.height = (_tile_size * _scaling) * 4;
 
-    // auto n = get_tile_number({light_bound.top, light_bound.left});
-    // _sprites[n.x][n.y].setColor(sf::Color::Black);
     for (int y = 0; y < _sprites.size(); ++y) {
         for (int x = 0; x < _sprites[0].size(); ++x) {
-            if (light_bound.intersects(_sprites[y][x].getGlobalBounds())) {
+            if (_light_boundary.intersects(_sprites[y][x].getGlobalBounds())) {
                 _sprites[y][x].setColor(sf::Color::White);
             }
             else {
@@ -161,7 +160,11 @@ void Location::light_up(sf::FloatRect const& boundary)
             }
         }
     }
-    // _sprites[n.y][n.x].setColor(sf::Color::Transparent);
+}
+
+sf::FloatRect Location::get_light_boundary() const
+{
+    return _light_boundary;
 }
 
 }  // namespace explorer

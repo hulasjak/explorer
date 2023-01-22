@@ -18,4 +18,14 @@ void Enemy::set_sprite(sf::Vector2i const& start_pose)
     _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
 }
 
+void Enemy::light_up(sf::FloatRect const& boundary)
+{
+    if (boundary.intersects(_sprite.getGlobalBounds())) {
+        _sprite.setColor(sf::Color::White);
+    }
+    else {
+        _sprite.setColor(sf::Color::Black);
+    }
+}
+
 }  // namespace explorer

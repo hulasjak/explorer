@@ -12,6 +12,7 @@
 #include "explorer/physics_engine.hpp"
 #include "explorer/enemy.hpp"
 #include "explorer/a_star_impl.hpp"
+#include "explorer/side_panel.hpp"
 
 namespace explorer {
 class GameManager
@@ -39,6 +40,8 @@ private:
     std::shared_ptr<Location> _current_location;
     std::shared_ptr<Player> _player;
     std::shared_ptr<Enemy> _goblin;
+    std::shared_ptr<SidePanel> _panel;
+
     std::shared_ptr<AStar<ROWS, COLS>> _astar;
     PhysicsEngine _physics;
 
