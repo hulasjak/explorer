@@ -47,6 +47,8 @@ private:
 
     sf::Event _event;
     sf::Vector2<int> _command_move;
+    std::chrono::time_point<std::chrono::system_clock> _start_time;
+    bool _enemy_spawed;
 
     bool _game_running{true};
     int _current_level{0};
