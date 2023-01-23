@@ -145,10 +145,10 @@ std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
 
 void Location::light_up(sf::FloatRect const& boundary)
 {
-    _light_boundary.top    = boundary.top - (_tile_size * _scaling) * 2;
-    _light_boundary.left   = boundary.left - (_tile_size * _scaling) * 2;
-    _light_boundary.width  = (_tile_size * _scaling) * 4;
-    _light_boundary.height = (_tile_size * _scaling) * 4;
+    _light_boundary.top    = boundary.top - (_tile_size * _scaling) * 4;
+    _light_boundary.left   = boundary.left - (_tile_size * _scaling) * 4;
+    _light_boundary.width  = (_tile_size * _scaling) * 8;
+    _light_boundary.height = (_tile_size * _scaling) * 8;
 
     for (int y = 0; y < _sprites.size(); ++y) {
         for (int x = 0; x < _sprites[0].size(); ++x) {

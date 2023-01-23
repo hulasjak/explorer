@@ -5,7 +5,7 @@
 namespace explorer {
 GameManager::GameManager(/* args */)
 {
-    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1600, 1000),
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1700, 1000),
                                                  "explorer",
                                                  sf::Style::Close | sf::Style::Titlebar);
     _window->setFramerateLimit(30);
@@ -63,7 +63,9 @@ void GameManager::update()
     if (_current_location->is_on_finish(_player->get_boundaries())) {
         new_turn();
     }
-    if (_goblin->check_contact(_player->get_boundaries())) {
+    if (_player->check_contact(_goblin->get_kill_boundaries())) {
+        _goblin->spawn(
+            sf::Vector2i{_current_location->get_start_position().x + 10, _current_location->get_start_position().y});
         if (!_player->try_to_kill()) {
             _window->close();
             _game_running = false;

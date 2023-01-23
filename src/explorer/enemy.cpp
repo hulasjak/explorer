@@ -28,4 +28,14 @@ void Enemy::light_up(sf::FloatRect const& boundary)
     }
 }
 
+sf::FloatRect Enemy::get_kill_boundaries() const
+{
+    auto boundary   = _sprite.getGlobalBounds();
+    boundary.top    = boundary.top - 10;
+    boundary.left   = boundary.left - 10;
+    boundary.width  = boundary.width + 20;
+    boundary.height = boundary.height + 20;
+    return boundary;
+}
+
 }  // namespace explorer

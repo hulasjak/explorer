@@ -15,11 +15,7 @@ public:
 
 private:
     sf::Font _font;
-    sf::Text _lives_txt;
-    sf::Text _level_txt;
-
-    int _lives;
-    int _level;
+    sf::Text _txt;
 };
 
 }  // namespace explorer
