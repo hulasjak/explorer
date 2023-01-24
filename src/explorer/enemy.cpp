@@ -8,6 +8,7 @@ void Enemy::spawn(sf::Vector2i const& start_pose)
     set_sprite(start_pose);
     _max_speed = 100;
     _max_acc   = 10;
+    _spawned   = true;
 }
 
 void Enemy::set_sprite(sf::Vector2i const& start_pose)
@@ -36,6 +37,18 @@ sf::FloatRect Enemy::get_kill_boundaries() const
     boundary.width  = boundary.width + 20;
     boundary.height = boundary.height + 20;
     return boundary;
+}
+
+bool Enemy::is_spawned() const
+{
+    return _spawned;
+}
+void Enemy::is_spawned(bool spawned)
+{
+    _spawned = spawned;
+
+    if (!spawned)
+        _sprite.setColor(sf::Color::Transparent);
 }
 
 }  // namespace explorer

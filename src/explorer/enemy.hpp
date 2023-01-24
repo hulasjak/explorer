@@ -15,8 +15,12 @@ public:
     void light_up(sf::FloatRect const& boundary);
     sf::FloatRect get_kill_boundaries() const;
 
+    bool is_spawned() const;
+    void is_spawned(bool spawned);
+
 private:
     virtual void set_sprite(sf::Vector2i const& start_pose) override;
+    bool _spawned{false};
 };
 
 }  // namespace explorer

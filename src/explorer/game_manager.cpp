@@ -57,18 +57,16 @@ void GameManager::update()
     _current_location->light_up(_player->get_boundaries());
     _panel->update(_player->get_lives(), _current_level);
 
-    // TODO clean up the game logic, move _spawned to class
-    if (_enemy_spawed) {
+    if (_goblin->is_spawned()) {
         auto gb        = _current_location->get_tile_number(_goblin->get_center());
         auto pl        = _current_location->get_tile_number(_player->get_center());
         auto next_move = _astar->aStarSearch(gb, pl);
         _physics.update(next_move, _goblin);
         _goblin->light_up(_current_location->get_light_boundary());
+
         if (_player->check_contact(_goblin->get_kill_boundaries())) {
-            _goblin->spawn(
-                sf::Vector2i{_current_location->get_start_position().x, _current_location->get_start_position().y});
-            _start_time   = std::chrono::system_clock::now();
-            _enemy_spawed = false;
+            _start_time = std::chrono::system_clock::now();
+            _goblin->is_spawned(false);
 
             if (!_player->try_to_kill()) {
                 _window->close();
@@ -82,10 +80,9 @@ void GameManager::update()
     }
 
     // give head start
-    if (!_enemy_spawed && std::chrono::system_clock::now() - _start_time > 5s) {
-        _goblin->spawn(
-            sf::Vector2i{_current_location->get_start_position().x, _current_location->get_start_position().y});
-        _enemy_spawed = true;
+    if (!_goblin->is_spawned() && std::chrono::system_clock::now() - _start_time > 5s) {
+        _goblin->spawn(_current_location->get_start_position());
+        _goblin->is_spawned(true);
     }
 }
 
@@ -95,9 +92,9 @@ void GameManager::new_turn()
     _player->spawn(_current_location->get_start_position());
 
     _physics.init(_current_location);
-    _astar        = make_shared<AStar<ROWS, COLS>>(_current_location->get_layout());
-    _start_time   = std::chrono::system_clock::now();
-    _enemy_spawed = false;
+    _astar      = make_shared<AStar<ROWS, COLS>>(_current_location->get_layout());
+    _start_time = std::chrono::system_clock::now();
+    _goblin->is_spawned(false);
 
     _current_level++;
 }
