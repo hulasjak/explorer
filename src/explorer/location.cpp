@@ -17,7 +17,6 @@ Location::Location(/* args */)
     }
     _stair_texture.loadFromFile("resources/graphics/tiles/floor/stair_nextlevel.png");
 
-    // scale the sprites only once
     for (int y = 0; y < _sprites.size(); ++y) {
         for (int x = 0; x < _sprites[0].size(); ++x) {
             _sprites[y][x].scale(_scaling, _scaling);
@@ -37,15 +36,13 @@ void Location::load_level(int const level)
 
     file.open(resource_path, std::ios_base::in);
     if (!file.is_open())
-        throw std::runtime_error("error to open \n");
+        throw std::runtime_error("error to open location file \n");
 
     file >> _start_pose.x;
     file >> _start_pose.y;
 
     file >> _finish_pose.x;
     file >> _finish_pose.y;
-
-    // _layout.resize(ROWS);
 
     int raw;
     // find better way to scale the map
@@ -120,9 +117,8 @@ auto Location::get_finish_position() const -> sf::Vector2i
 
 bool Location::is_position_free(sf::Vector2i const& position) const
 {
-    int tile_x = position.x / (_tile_size * _scaling);
-    int tile_y = position.y / (_tile_size * _scaling);
-    return _layout[tile_y][tile_x];
+    auto n = get_tile_number(position);
+    return _layout[n.y][n.x];
 }
 
 sf::Vector2i Location::get_tile_number(sf::Vector2i const& position) const

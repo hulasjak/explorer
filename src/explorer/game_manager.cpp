@@ -15,6 +15,7 @@ GameManager::GameManager(/* args */)
     _player           = std::make_shared<Player>();
     _goblin           = std::make_shared<Enemy>();
     _panel            = std::make_shared<SidePanel>();
+    _physics          = std::make_shared<PhysicsEngine>();
     new_turn();
 }
 
@@ -50,7 +51,7 @@ void GameManager::update()
 {
     poll_events();
 
-    _physics.update(_command_move, _player);
+    _physics->update(_command_move, _player);
     _command_move.x = 0;
     _command_move.y = 0;
 
@@ -61,7 +62,7 @@ void GameManager::update()
         auto gb        = _current_location->get_tile_number(_goblin->get_center());
         auto pl        = _current_location->get_tile_number(_player->get_center());
         auto next_move = _astar->aStarSearch(gb, pl);
-        _physics.update(next_move, _goblin);
+        _physics->update(next_move, _goblin);
         _goblin->light_up(_current_location->get_light_boundary());
 
         if (_player->check_contact(_goblin->get_kill_boundaries())) {
@@ -91,7 +92,7 @@ void GameManager::new_turn()
     _current_location->load_level(_current_level);
     _player->spawn(_current_location->get_start_position());
 
-    _physics.init(_current_location);
+    _physics->init(_current_location);
     _astar      = make_shared<AStar<ROWS, COLS>>(_current_location->get_layout());
     _start_time = std::chrono::system_clock::now();
     _goblin->is_spawned(false);

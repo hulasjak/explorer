@@ -20,16 +20,6 @@ void Player::set_sprite(sf::Vector2i const& start_pose)
     _start_pose = start_pose;
 }
 
-bool Player::get_win() const
-{
-    return _won;
-}
-
-void Player::set_win(bool state)
-{
-    _won = state;
-}
-
 bool Player::try_to_kill()
 {
     if (_lives > 0) {

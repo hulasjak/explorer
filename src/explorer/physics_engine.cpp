@@ -3,14 +3,12 @@
 namespace explorer {
 PhysicsEngine::PhysicsEngine() {}
 
-PhysicsEngine::~PhysicsEngine() {}
-
 void PhysicsEngine::init(std::shared_ptr<Location> location)
 {
     _location = location;
 }
 
-void PhysicsEngine::can_move(sf::Vector2i& displacement, sf::FloatRect const& character_boundary)
+void PhysicsEngine::check_collision(sf::Vector2i& displacement, sf::FloatRect const& character_boundary)
 {
     sf::Vector2i corner1;
     sf::Vector2i corner2;
@@ -73,16 +71,15 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     }
 
     // otherwise speed unchanged
-
     auto displacement = static_cast<sf::Vector2i>(new_velocity * _dt);
 
-    can_move(displacement, character->get_boundaries());
+    check_collision(displacement, character->get_boundaries());
     character->move(displacement);
     character->set_current_velocity(new_velocity);
     character->animate();
 }
 
-// find some std lib to do this...
+// find std lib to do this...
 int PhysicsEngine::sign_of(float const number)
 {
     if (std::abs(number) > 0.0001)

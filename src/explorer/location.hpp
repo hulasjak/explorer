@@ -10,8 +10,6 @@ namespace explorer {
 
 class Location : public sf::Drawable
 {
-    enum TILE_TYPE { WALL, FLOOR, END };
-
 public:
     Location(/* args */);
     ~Location();
@@ -20,8 +18,8 @@ public:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    auto get_start_position() const -> sf::Vector2i;
-    auto get_finish_position() const -> sf::Vector2i;
+    sf::Vector2i get_start_position() const;
+    sf::Vector2i get_finish_position() const;
 
     bool is_position_free(sf::Vector2i const& position) const;
     bool is_on_finish(sf::FloatRect const& position) const;
@@ -46,7 +44,6 @@ private:
     sf::Vector2i _start_pose;
     sf::Vector2i _finish_pose;
 
-    sf::Font font;
     std::array<std::array<int, COLS>, ROWS> _layout;
     std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
     sf::Sprite _start_stairs;
