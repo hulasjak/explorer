@@ -11,24 +11,20 @@ add_executable(${PROJECT_NAME}
                physics_engine.cpp
                character.cpp
                enemy.cpp
-               side_panel)
-
+               side_panel
+               )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 ${PROJECT_SOURCE_DIR}/src
 ${PROJECT_SOURCE_DIR}/SFML
 )
 
-MESSAGE(STATUS CMakePrintSystemInformation)
 target_link_libraries(${PROJECT_NAME} PUBLIC
 sfml-graphics
 sfml-audio
 sfml-window 
 sfml-system
 )
-
-MESSAGE(STATUS ${CMAKE_BINARY_DIR})
-
 
 install(TARGETS 
             ${PROJECT_NAME}
