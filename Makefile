@@ -1,6 +1,7 @@
 
 .PHONY: all
 all: 
+	mkdir -p build;\
 	cd build;\
 	cmake -DCMAKE_BUILD_TYPE=Debug ..;\
 	cd ..;\
@@ -8,5 +9,3 @@ all:
 
 clean:
 	rm -rf build;\
-	mkdir build
-

@@ -31,7 +31,7 @@ public:
     sf::FloatRect get_light_boundary() const;
 
 private:
-    void set_tile(int position_x, int position_y, int size, int type);
+    void set_tile(sf::Vector2u const& position, int size, int type);
     void set_stairs();
 
     std::vector<sf::Texture> _floor_textures;
@@ -40,6 +40,8 @@ private:
 
     static constexpr float _scaling{2.0};
     static constexpr int _tile_size{16};
+    static constexpr int _floor_texture_num{9};
+    static constexpr int _wall_texture_num{2};
 
     sf::Vector2i _start_pose;
     sf::Vector2i _finish_pose;

@@ -7,21 +7,25 @@ namespace explorer {
 
 Location::Location(/* args */)
 {
-    _floor_textures.resize(9);
-    for (size_t i = 0; i < 9; i++) {
-        _floor_textures[i].loadFromFile("resources/graphics/tiles/floor/floor_" + std::to_string(i + 1) + ".png");
+    int index{0};
+    _floor_textures.resize(_floor_texture_num);
+    for (auto&& texture : _floor_textures) {
+        texture.loadFromFile("resources/graphics/tiles/floor/floor_" + std::to_string(++index) + ".png");
     }
-    _wall_textures.resize(2);
-    for (size_t i = 0; i < 2; i++) {
-        _wall_textures[i].loadFromFile("resources/graphics/tiles/wall/wall_" + std::to_string(i + 1) + ".png");
+
+    index = 0;
+    _wall_textures.resize(_wall_texture_num);
+    for (auto&& texture : _wall_textures) {
+        texture.loadFromFile("resources/graphics/tiles/wall/wall_" + std::to_string(++index) + ".png");
     }
     _stair_texture.loadFromFile("resources/graphics/tiles/floor/stair_nextlevel.png");
 
-    for (int y = 0; y < _sprites.size(); ++y) {
-        for (int x = 0; x < _sprites[0].size(); ++x) {
-            _sprites[y][x].scale(_scaling, _scaling);
+    for (auto&& row : _sprites) {
+        for (auto& sprite : row) {
+            sprite.scale(_scaling, _scaling);
         }
     }
+
     _start_stairs.scale(_scaling, _scaling);
     _finish_stairs.scale(_scaling, _scaling);
 }
@@ -50,7 +54,7 @@ void Location::load_level(int const level)
         if (i % 2 != 0) {
             _layout[i] = _layout[i - 1];
             for (unsigned int j = 0; j < COLS; ++j) {
-                set_tile(j, i, _tile_size * _scaling, _layout[i][j]);
+                set_tile(sf::Vector2u{j, i}, _tile_size * _scaling, _layout[i][j]);
             }
         }
         else {
@@ -59,7 +63,7 @@ void Location::load_level(int const level)
                     file >> raw;
                 }
                 _layout[i][j] = raw;
-                set_tile(j, i, _tile_size * _scaling, _layout[i][j]);
+                set_tile(sf::Vector2u{j, i}, _tile_size * _scaling, _layout[i][j]);
             }
         }
     }
@@ -68,30 +72,30 @@ void Location::load_level(int const level)
 
 void Location::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    for (int y = 0; y < _sprites.size(); ++y) {
-        for (int x = 0; x < _sprites[0].size(); ++x) {
-            target.draw(_sprites[y][x]);
+    for (auto&& row : _sprites) {
+        for (auto&& sprite : row) {
+            target.draw(sprite);
         }
     }
     target.draw(_start_stairs);
     target.draw(_finish_stairs);
 }
 
-void Location::set_tile(int position_x, int position_y, int size, int type)
+void Location::set_tile(sf::Vector2u const& position, int size, int type)
 {
     switch (type) {
         case 1:
-            _sprites[position_y][position_x].setTexture(_floor_textures[rand() % 8]);
+            _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
             break;
 
         case 0:
-            _sprites[position_y][position_x].setTexture(_wall_textures[rand() % 2]);
+            _sprites[position.y][position.x].setTexture(_wall_textures[rand() % _wall_texture_num]);
             break;
 
         default:
             break;
     };
-    _sprites[position_y][position_x].setPosition(position_x * size, position_y * size);
+    _sprites[position.y][position.x].setPosition(position.x * size, position.y * size);
 }
 
 void Location::set_stairs()
@@ -146,13 +150,13 @@ void Location::light_up(sf::FloatRect const& boundary)
     _light_boundary.width  = (_tile_size * _scaling) * 8;
     _light_boundary.height = (_tile_size * _scaling) * 8;
 
-    for (int y = 0; y < _sprites.size(); ++y) {
-        for (int x = 0; x < _sprites[0].size(); ++x) {
-            if (_light_boundary.intersects(_sprites[y][x].getGlobalBounds())) {
-                _sprites[y][x].setColor(sf::Color::White);
+    for (auto&& row : _sprites) {
+        for (auto& sprite : row) {
+            if (_light_boundary.intersects(sprite.getGlobalBounds())) {
+                sprite.setColor(sf::Color::White);
             }
             else {
-                _sprites[y][x].setColor(sf::Color::Black);
+                sprite.setColor(sf::Color::Black);
             }
         }
     }

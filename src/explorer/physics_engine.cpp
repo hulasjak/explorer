@@ -13,8 +13,6 @@ void PhysicsEngine::check_collision(sf::Vector2i& displacement, sf::FloatRect co
     sf::Vector2i corner1;
     sf::Vector2i corner2;
 
-    // todo alow to slide
-    // check pure x movement
     if (displacement.x > 0) {
         corner1.x = character_boundary.left + character_boundary.width + displacement.x;
         corner1.y = character_boundary.top;

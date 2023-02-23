@@ -25,7 +25,7 @@ private:
     std::shared_ptr<Location> _location;
 
     // dt at 30fps in s
-    float const _dt{0.033};
+    static constexpr float _dt{0.033};
 };
 
 }  // namespace explorer
