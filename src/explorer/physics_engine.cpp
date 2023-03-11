@@ -47,7 +47,7 @@ void PhysicsEngine::check_collision(sf::Vector2i& displacement, sf::FloatRect co
     }
 }
 
-void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Character> character)
+void PhysicsEngine::update_motion(sf::Vector2i const& direction, std::shared_ptr<Character> character)
 {
     auto new_velocity  = character->get_current_velocity();
     const auto max_acc = character->get_max_acc();
@@ -75,6 +75,17 @@ void PhysicsEngine::update(sf::Vector2i const& direction, std::shared_ptr<Charac
     character->move(displacement);
     character->set_current_velocity(new_velocity);
     character->animate();
+}
+
+bool PhysicsEngine::update_scene(std::shared_ptr<Player> player)
+{
+    for (auto& object : _location->get_scene()) {
+        object->update_spikes_state();
+        if (object->check_contact(player->get_boundaries())) {
+            return false;
+        }
+    }
+    return true;
 }
 
 // find std lib to do this...

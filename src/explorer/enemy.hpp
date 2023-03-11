@@ -19,7 +19,6 @@ public:
     void is_spawned(bool spawned);
 
 private:
-    virtual void set_sprite(sf::Vector2i const& start_pose) override;
     bool _spawned{false};
 };
 

@@ -17,7 +17,6 @@ public:
     int get_lives() const;
 
 private:
-    void set_sprite(sf::Vector2i const& start_pose) override;
     int _lives;
 };
 

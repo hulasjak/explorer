@@ -51,7 +51,7 @@ void GameManager::update()
 {
     poll_events();
 
-    _physics->update(_command_move, _player);
+    _physics->update_motion(_command_move, _player);
     _command_move.x = 0;
     _command_move.y = 0;
 
@@ -62,18 +62,16 @@ void GameManager::update()
         auto gb        = _current_location->get_tile_number(_goblin->get_center());
         auto pl        = _current_location->get_tile_number(_player->get_center());
         auto next_move = _astar->aStarSearch(gb, pl);
-        _physics->update(next_move, _goblin);
+        _physics->update_motion(next_move, _goblin);
         _goblin->light_up(_current_location->get_light_boundary());
 
         if (_player->check_contact(_goblin->get_kill_boundaries())) {
-            _start_time = std::chrono::system_clock::now();
-            _goblin->is_spawned(false);
-
-            if (!_player->try_to_kill()) {
-                _window->close();
-                _game_running = false;
-            }
+            kill_player();
         }
+    }
+
+    if (!_physics->update_scene(_player)) {
+        kill_player();
     }
 
     if (_current_location->is_on_finish(_player->get_boundaries())) {
@@ -84,6 +82,17 @@ void GameManager::update()
     if (!_goblin->is_spawned() && std::chrono::system_clock::now() - _start_time > 5s) {
         _goblin->spawn(_current_location->get_start_position());
         _goblin->is_spawned(true);
+    }
+}
+
+void GameManager::kill_player()
+{
+    _start_time = std::chrono::system_clock::now();
+    _goblin->is_spawned(false);
+
+    if (!_player->try_to_kill()) {
+        _window->close();
+        _game_running = false;
     }
 }
 

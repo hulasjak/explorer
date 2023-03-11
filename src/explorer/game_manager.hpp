@@ -37,6 +37,8 @@ private:
     // prepare a new level
     void new_turn();
 
+    void kill_player();
+
     std::shared_ptr<Location> _current_location;
     std::shared_ptr<Player> _player;
     std::shared_ptr<Enemy> _goblin;

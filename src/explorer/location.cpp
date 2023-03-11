@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "explorer/location.hpp"
+#include "explorer/spikes.hpp"
 
 namespace explorer {
 
@@ -79,11 +81,22 @@ void Location::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
     target.draw(_start_stairs);
     target.draw(_finish_stairs);
+    for (auto& object : _scene_objects) {
+        object->draw(target, states);
+    }
 }
 
 void Location::set_tile(sf::Vector2u const& position, int size, int type)
 {
+    std::shared_ptr<Spikes> s;
+    sf::Vector2u p{position.x * size, position.y * size};
     switch (type) {
+        case 2:
+            std::cout << "added spikes";
+            s = std::make_shared<Spikes>(p);
+            _scene_objects.push_back(s);
+            std::cout << "size " << _scene_objects.size();
+            break;
         case 1:
             _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
             break;
@@ -94,7 +107,7 @@ void Location::set_tile(sf::Vector2u const& position, int size, int type)
 
         default:
             break;
-    };
+    }
     _sprites[position.y][position.x].setPosition(position.x * size, position.y * size);
 }
 
@@ -160,6 +173,19 @@ void Location::light_up(sf::FloatRect const& boundary)
             }
         }
     }
+    for (auto& object : _scene_objects) {
+        if (_light_boundary.intersects(object->get_boundaries())) {
+            object->set_color(sf::Color::White);
+        }
+        else {
+            object->set_color(sf::Color::Black);
+        }
+    }
+}
+
+std::vector<std::shared_ptr<Spikes>> Location::get_scene() const
+{
+    return _scene_objects;
 }
 
 sf::FloatRect Location::get_light_boundary() const

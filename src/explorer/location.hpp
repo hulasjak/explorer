@@ -2,6 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <memory>
+
+#include "explorer/physical_object.hpp"
+#include "explorer/spikes.hpp"
 
 #define ROWS 30
 #define COLS 42
@@ -29,6 +33,7 @@ public:
 
     void light_up(sf::FloatRect const& boundary);
     sf::FloatRect get_light_boundary() const;
+    std::vector<std::shared_ptr<Spikes>> get_scene() const;
 
 private:
     void set_tile(sf::Vector2u const& position, int size, int type);
@@ -48,6 +53,7 @@ private:
 
     std::array<std::array<int, COLS>, ROWS> _layout;
     std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
+    std::vector<std::shared_ptr<Spikes>> _scene_objects;
     sf::Sprite _start_stairs;
     sf::Sprite _finish_stairs;
     sf::FloatRect _light_boundary;

@@ -1,22 +1,21 @@
 #include "explorer/enemy.hpp"
 namespace explorer {
 
-Enemy::Enemy() {}
+Enemy::Enemy()
+{
+    _active_textures.resize(5);
+    _idle_textures.resize(5);
+    set_animation("resources/graphics/enemies/goblin/goblin_run_anim_f", _active_textures);
+    set_animation("resources/graphics/enemies/goblin/goblin_idle_anim_f", _idle_textures);
+    _sprite.setScale(2.0, 2.0);
+}
 
 void Enemy::spawn(sf::Vector2i const& start_pose)
 {
-    set_sprite(start_pose);
+    _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
     _max_speed = 100;
     _max_acc   = 10;
     _spawned   = true;
-}
-
-void Enemy::set_sprite(sf::Vector2i const& start_pose)
-{
-    set_animation("resources/graphics/enemies/goblin/goblin", 5);
-
-    _sprite.setScale(2.0, 2.0);
-    _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
 }
 
 void Enemy::light_up(sf::FloatRect const& boundary)

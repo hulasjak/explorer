@@ -2,22 +2,22 @@
 
 namespace explorer {
 
-Player::Player() {}
+Player::Player()
+{
+    _active_textures.resize(5);
+    _idle_textures.resize(5);
+    set_animation("resources/graphics/heroes/knight/knight_idle_anim_f", _idle_textures);
+    set_animation("resources/graphics/heroes/knight/knight_run_anim_f", _active_textures);
+    _sprite.setScale(2.0, 2.0);
+}
 
 void Player::spawn(sf::Vector2i const& start_pose)
 {
-    set_sprite(start_pose);
-    _max_speed = 200;
-    _max_acc   = 30;
-    _lives     = 3;
-}
-
-void Player::set_sprite(sf::Vector2i const& start_pose)
-{
-    set_animation("resources/graphics/heroes/knight/knight", 5);
-    _sprite.setScale(2.0, 2.0);
     _sprite.setPosition(start_pose.x * 64, start_pose.y * 64);
     _start_pose = start_pose;
+    _max_speed  = 200;
+    _max_acc    = 30;
+    _lives      = 3;
 }
 
 bool Player::try_to_kill()

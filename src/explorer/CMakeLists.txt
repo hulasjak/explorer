@@ -11,7 +11,9 @@ add_executable(${PROJECT_NAME}
                physics_engine.cpp
                character.cpp
                enemy.cpp
-               side_panel
+               side_panel.cpp
+               physical_object.cpp
+               spikes.cpp
                )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
