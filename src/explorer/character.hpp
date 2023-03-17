@@ -26,7 +26,7 @@ public:
 
 protected:
     std::chrono::time_point<std::chrono::system_clock> _last_animation;
-    int _animated_texture{0};
+    unsigned int _animated_texture{0};
 
     int _max_speed;
     int _max_acc;

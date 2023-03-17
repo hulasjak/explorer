@@ -151,7 +151,7 @@ bool Location::is_on_finish(sf::FloatRect const& position) const
     return _finish_stairs.getGlobalBounds().intersects(position);
 }
 
-std::array<std::array<int, COLS>, ROWS> Location::get_layout() const
+std::array<std::array<unsigned int, COLS>, ROWS> Location::get_layout() const
 {
     return _layout;
 }

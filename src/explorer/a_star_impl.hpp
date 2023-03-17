@@ -13,15 +13,13 @@
 
 using namespace std;
 
-// Creating a shortcut for int, int pair type
-typedef pair<int, int> Pair;
 // Creating a shortcut for tuple<int, int, int> type
 typedef tuple<double, int, int> Tuple;
 
 // A structure to hold the necessary parameters
 struct cell {
     // Row and Column index of its parent
-    Pair parent;
+    sf::Vector2i parent;
     // f = g + h
     double f, g, h;
     cell()
@@ -42,51 +40,51 @@ public:
     // A Function to find the shortest path between a given
     // source cell to a destination cell according to A* Search
     // Algorithm
-    AStar(const array<array<int, COL>, ROW>& grid)
+    AStar(const array<array<unsigned int, COL>, ROW>& grid)
     {
-        for (int i = 0; i < COL; ++i)
-            for (int j = 0; j < ROW; ++j)
+        for (unsigned int i = 0; i < COL; ++i)
+            for (unsigned int j = 0; j < ROW; ++j)
                 _grid[i][j] = grid[j][i];
     }
 
     sf::Vector2i aStarSearch(sf::Vector2i const& src_v, sf::Vector2i const& dest_v)
     {
-        Pair src{src_v.x, src_v.y};
-        Pair dest{dest_v.x, dest_v.y};
+        sf::Vector2i src{src_v.x, src_v.y};
+        sf::Vector2i dest{dest_v.x, dest_v.y};
 
         // If the source is out of range
         if (!isValid(src)) {
-            std::runtime_error("Source is invalid");
+            throw std::runtime_error("Source is invalid");
         }
 
         // If the destination is out of range
         if (!isValid(dest)) {
-            std::runtime_error("Destination is invalid");
+            throw std::runtime_error("Destination is invalid");
         }
 
         // Either the source or the destination is blocked
         if (!isUnBlocked(src) || !isUnBlocked(dest)) {
-            std::runtime_error("Source or the destination is blocked");
+            throw std::runtime_error("Source or the destination is blocked");
         }
 
         // If the destination cell is the same as source cell
         if (isDestination(src, dest)) {
-            std::runtime_error("We are already at the destination");
+            return {0, 0};
         }
 
         // Create a closed list and initialise it to false which
         // means that no cell has been included yet This closed
         // list is implemented as a boolean 2D array
-        bool closedList[ROW][COL];
+        bool closedList[COL][ROW];
         memset(closedList, false, sizeof(closedList));
 
         // Declare a 2D array of structure to hold the details
         // of that cell
-        array<array<cell, COL>, ROW> cellDetails;
+        array<array<cell, ROW>, COL> cellDetails;
 
-        int i, j;
+        unsigned int i, j;
         // Initialising the parameters of the starting node
-        i = src.first, j = src.second;
+        i = src.x, j = src.y;
         cellDetails[i][j].f      = 0.0;
         cellDetails[i][j].g      = 0.0;
         cellDetails[i][j].h      = 0.0;
@@ -138,7 +136,7 @@ public:
             */
             for (int add_x = -1; add_x <= 1; add_x++) {
                 for (int add_y = -1; add_y <= 1; add_y++) {
-                    Pair neighbour(i + add_x, j + add_y);
+                    sf::Vector2i neighbour{i + add_x, j + add_y};
                     // Only process this cell if this is a valid
                     // one
                     if (isValid(neighbour)) {
@@ -147,19 +145,21 @@ public:
                         if (isDestination(neighbour,
                                           dest)) {  // Set the Parent of
                                                     // the destination cell
-                            cellDetails[neighbour.first][neighbour.second].parent = {i, j};
+                            cellDetails[neighbour.x][neighbour.y].parent = {i, j};
 
                             auto path = tracePath(cellDetails, dest);
-                            sf::Vector2i vector(path.first, path.second);
-                            return vector;
+                            if (path.x == 0 && path.y == 0)
+                                return sf::Vector2i{dest - src};
+
+                            return path;
                         }
                         // If the successor is already on the
                         // closed list or if it is blocked, then
                         // ignore it.  Else do the following
-                        else if (!closedList[neighbour.first][neighbour.second] && isUnBlocked(neighbour)) {
+                        else if (!closedList[neighbour.x][neighbour.y] && isUnBlocked(neighbour)) {
                             double gNew, hNew, fNew;
                             gNew = cellDetails[i][j].g + 1.0;
-                            hNew = calculateHValue(neighbour, dest);
+                            hNew = calculateHValue(neighbour, static_cast<sf::Vector2i>(dest));
                             fNew = gNew + hNew;
 
                             // If it isn’t on the open list, add
@@ -172,16 +172,16 @@ public:
                             // already, check to see if this
                             // path to that square is better,
                             // using 'f' cost as the measure.
-                            if (cellDetails[neighbour.first][neighbour.second].f == -1 ||
-                                cellDetails[neighbour.first][neighbour.second].f > fNew) {
-                                openList.emplace(fNew, neighbour.first, neighbour.second);
+                            if (cellDetails[neighbour.x][neighbour.y].f == -1 ||
+                                cellDetails[neighbour.x][neighbour.y].f > fNew) {
+                                openList.emplace(fNew, neighbour.x, neighbour.y);
 
                                 // Update the details of this
                                 // cell
-                                cellDetails[neighbour.first][neighbour.second].g      = gNew;
-                                cellDetails[neighbour.first][neighbour.second].h      = hNew;
-                                cellDetails[neighbour.first][neighbour.second].f      = fNew;
-                                cellDetails[neighbour.first][neighbour.second].parent = {i, j};
+                                cellDetails[neighbour.x][neighbour.y].g      = gNew;
+                                cellDetails[neighbour.x][neighbour.y].h      = hNew;
+                                cellDetails[neighbour.x][neighbour.y].f      = fNew;
+                                cellDetails[neighbour.x][neighbour.y].parent = {i, j};
                             }
                         }
                     }
@@ -194,65 +194,67 @@ public:
         // reach the destination cell. This may happen when the
         // there is no way to destination cell (due to
         // blockages)
-        std::runtime_error("Failed to find the Destination Cell\n");
+        throw std::runtime_error("Failed to find the Destination Cell\n");
     }
 
 private:
     array<array<int, ROW>, COL> _grid;
-    bool isValid(const Pair& point)
+    bool isValid(const sf::Vector2i& point)
     {  // Returns true if row number and column number is in
        // range
         if (ROW > 0 && COL > 0)
-            return (point.first >= 0) && (point.first < ROW) && (point.second >= 0) && (point.second < COL);
+            return (point.x >= 0) && (point.x < COL) && (point.y >= 0) && (point.y < ROW);
 
         return false;
     }
 
     // A Utility Function to check whether the given cell is
     // blocked or not
-    bool isUnBlocked(const Pair& point)
+    bool isUnBlocked(const sf::Vector2i& point)
     {
         // Returns true if the cell is not blocked else false
-        return isValid(point) && _grid[point.first][point.second] == 1;
+        return isValid(point) && _grid[point.x][point.y] == 1;
     }
 
     // A Utility Function to check whether destination cell has
     // been reached or not
-    bool isDestination(const Pair& position, const Pair& dest) { return position == dest; }
+    bool isDestination(const sf::Vector2i& position, const sf::Vector2i& dest) { return position == dest; }
+    // bool isDestination(const sf::Vector2i& position, const sf::Vector2i& dest) { return position == dest; }
 
     // A Utility Function to calculate the 'h' heuristics.
-    double calculateHValue(const Pair& src, const Pair& dest)
+    double calculateHValue(const sf::Vector2i& src, const sf::Vector2i& dest)
     {
         // h is estimated with the two points distance formula
-        return sqrt(pow((src.first - dest.first), 2.0) + pow((src.second - dest.second), 2.0));
+        return sqrt(pow((src.x - dest.x), 2.0) + pow((src.y - dest.y), 2.0));
     }
 
     // A Utility Function to trace the path from the source to
     // destination
-    Pair tracePath(const array<array<cell, COL>, ROW>& cellDetails, const Pair& dest)
+    sf::Vector2i tracePath(const array<array<cell, ROW>, COL>& cellDetails, const sf::Vector2i& dest)
     {
         // printf("\nThe Path is ");
 
-        stack<Pair> Path;
+        stack<sf::Vector2i> Path;
 
-        int row        = dest.first;
-        int col        = dest.second;
-        Pair next_node = cellDetails[row][col].parent;
+        int row                = dest.x;
+        int col                = dest.y;
+        sf::Vector2i next_node = cellDetails[row][col].parent;
         do {
             Path.push(next_node);
             next_node = cellDetails[row][col].parent;
-            row       = next_node.first;
-            col       = next_node.second;
+            row       = next_node.x;
+            col       = next_node.y;
         } while (cellDetails[row][col].parent != next_node);
 
         Path.emplace(row, col);
         while (!Path.empty()) {
-            Pair p1 = Path.top();
+            auto p1 = static_cast<sf::Vector2i>(Path.top());
             Path.pop();
-            Pair p2 = Path.top();
+            auto p2 = static_cast<sf::Vector2i>(Path.top());
 
-            // printf("-> (%d,%d) ", p2.first - p1.first, p2.second - p1.second);
-            return {p2.first - p1.first, p2.second - p1.second};
+            // printf("-> (%d,%d) ", p2.x - p1.x, p2.y - p1.y);
+            return p2 - p1;
         }
+        throw std::runtime_error("Failed to find the Destination Cell\n");
     }
 };

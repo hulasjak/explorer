@@ -9,3 +9,7 @@ all:
 
 clean:
 	rm -rf build;\
+
+test: all
+	./build/tests/main_test
+

@@ -28,7 +28,7 @@ public:
     bool is_position_free(sf::Vector2i const& position) const;
     bool is_on_finish(sf::FloatRect const& position) const;
 
-    std::array<std::array<int, COLS>, ROWS> get_layout() const;
+    std::array<std::array<unsigned int, COLS>, ROWS> get_layout() const;
     sf::Vector2i get_tile_number(sf::Vector2i const& position) const;
 
     void light_up(sf::FloatRect const& boundary);
@@ -51,7 +51,7 @@ private:
     sf::Vector2i _start_pose;
     sf::Vector2i _finish_pose;
 
-    std::array<std::array<int, COLS>, ROWS> _layout;
+    std::array<std::array<unsigned int, COLS>, ROWS> _layout;
     std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
     std::vector<std::shared_ptr<Spikes>> _scene_objects;
     sf::Sprite _start_stairs;
