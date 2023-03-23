@@ -79,10 +79,23 @@ void PhysicsEngine::update_motion(sf::Vector2i const& direction, std::shared_ptr
 
 bool PhysicsEngine::update_scene(std::shared_ptr<Player> player)
 {
-    for (auto& object : _location->get_scene()) {
-        object->update_spikes_state();
-        if (object->check_contact(player->get_boundaries())) {
+    for (auto&& spike : _location->get_spikes()) {
+        spike->update_state();
+        if (spike->check_contact(player->get_boundaries())) {
             return false;
+        }
+    }
+    for (auto&& health : _location->get_health()) {
+        if (health->check_contact(player->get_boundaries())) {
+            player->add_life();
+            _location->remove_object(health);
+        }
+    }
+
+    for (auto&& torch : _location->get_torches()) {
+        if (torch->check_contact(player->get_boundaries())) {
+            _location->boost_light();
+            _location->remove_object(torch);
         }
     }
     return true;

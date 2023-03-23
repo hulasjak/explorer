@@ -14,6 +14,7 @@ add_executable(${PROJECT_NAME}
                side_panel.cpp
                physical_object.cpp
                spikes.cpp
+               scene_objects.cpp
                )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

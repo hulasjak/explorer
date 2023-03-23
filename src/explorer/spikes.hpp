@@ -10,11 +10,9 @@ class Spikes : public PhysicalObject
 public:
     Spikes(sf::Vector2u const& spawn_pose);
     ~Spikes();
-    operator sf::Sprite() { return _sprite; }
 
-    void update_spikes_state();
+    void update_state();
     bool is_active();
-    void set_color(sf::Color const& color);
 
     void animate();
     bool check_contact(sf::FloatRect const& external_boundary) const override;

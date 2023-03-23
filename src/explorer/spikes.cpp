@@ -17,17 +17,11 @@ Spikes::Spikes(sf::Vector2u const& spawn_pose)
     _sprite.setTexture(_idle_textures[0]);
     _sprite.setScale(2.0, 2.0);
     _sprite.setPosition(spawn_pose.x, spawn_pose.y);
-    std::cout << "created spikes";
 }
 
 Spikes::~Spikes() {}
 
-void Spikes::set_color(sf::Color const& color)
-{
-    _sprite.setColor(color);
-}
-
-void Spikes::update_spikes_state()
+void Spikes::update_state()
 {
     auto now = std::chrono::system_clock::now();
 

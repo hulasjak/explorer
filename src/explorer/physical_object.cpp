@@ -49,4 +49,9 @@ sf::Vector2i PhysicalObject::get_center() const
     return center;
 }
 
+void PhysicalObject::set_color(sf::Color const& color)
+{
+    _sprite.setColor(color);
+}
+
 }  // namespace explorer

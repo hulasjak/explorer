@@ -3,9 +3,11 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
+#include <list>
 
 #include "explorer/physical_object.hpp"
 #include "explorer/spikes.hpp"
+#include "explorer/scene_objects.hpp"
 
 #define ROWS 30
 #define COLS 42
@@ -33,7 +35,14 @@ public:
 
     void light_up(sf::FloatRect const& boundary);
     sf::FloatRect get_light_boundary() const;
-    std::vector<std::shared_ptr<Spikes>> get_scene() const;
+    void boost_light();
+
+    std::list<std::shared_ptr<Spikes>> get_spikes() const;
+    std::list<std::shared_ptr<Torch>> get_torches() const;
+    std::list<std::shared_ptr<Health>> get_health() const;
+
+    void remove_object(std::shared_ptr<Torch> const& torch);
+    void remove_object(std::shared_ptr<Health> const& health);
 
 private:
     void set_tile(sf::Vector2u const& position, int size, int type);
@@ -53,10 +62,15 @@ private:
 
     std::array<std::array<unsigned int, COLS>, ROWS> _layout;
     std::array<std::array<sf::Sprite, COLS>, ROWS> _sprites;
-    std::vector<std::shared_ptr<Spikes>> _scene_objects;
+    std::list<std::shared_ptr<Spikes>> _spikes;
+    std::list<std::shared_ptr<Health>> _healths;
+    std::list<std::shared_ptr<Torch>> _torches;
+
     sf::Sprite _start_stairs;
     sf::Sprite _finish_stairs;
     sf::FloatRect _light_boundary;
+
+    int _light_scaling{4};
 };
 
 }  // namespace explorer

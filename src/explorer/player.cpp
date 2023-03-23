@@ -35,4 +35,9 @@ int Player::get_lives() const
     return _lives;
 }
 
+void Player::add_life()
+{
+    _lives++;
+}
+
 }  // namespace explorer

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <memory>
 
 #include "explorer/location.hpp"
 #include "explorer/spikes.hpp"
@@ -69,6 +68,13 @@ void Location::load_level(int const level)
             }
         }
     }
+
+    for (auto& row : _layout) {
+        for (auto& element : row) {
+            element = (element != 0);
+        }
+    }
+
     set_stairs();
 }
 
@@ -81,21 +87,40 @@ void Location::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
     target.draw(_start_stairs);
     target.draw(_finish_stairs);
-    for (auto& object : _scene_objects) {
+    for (auto&& object : _spikes) {
+        object->draw(target, states);
+    }
+    for (auto&& object : _healths) {
+        object->draw(target, states);
+    }
+    for (auto&& object : _torches) {
         object->draw(target, states);
     }
 }
 
 void Location::set_tile(sf::Vector2u const& position, int size, int type)
 {
+    // wtf is this
     std::shared_ptr<Spikes> s;
+    std::shared_ptr<Health> h;
+    std::shared_ptr<Torch> t;
+
     sf::Vector2u p{position.x * size, position.y * size};
     switch (type) {
+        case 4:
+            t = std::make_shared<Torch>(p);
+            _torches.push_back(t);
+            _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
+            break;
+        case 3:
+            h = std::make_shared<Health>(p);
+            _healths.push_back(h);
+            _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
+            break;
         case 2:
-            std::cout << "added spikes";
             s = std::make_shared<Spikes>(p);
-            _scene_objects.push_back(s);
-            std::cout << "size " << _scene_objects.size();
+            _spikes.push_back(s);
+            _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
             break;
         case 1:
             _sprites[position.y][position.x].setTexture(_floor_textures[rand() % _floor_texture_num]);
@@ -156,12 +181,17 @@ std::array<std::array<unsigned int, COLS>, ROWS> Location::get_layout() const
     return _layout;
 }
 
+void Location::boost_light()
+{
+    _light_scaling = 8;
+}
+
 void Location::light_up(sf::FloatRect const& boundary)
 {
-    _light_boundary.top    = boundary.top - (_tile_size * _scaling) * 4;
-    _light_boundary.left   = boundary.left - (_tile_size * _scaling) * 4;
-    _light_boundary.width  = (_tile_size * _scaling) * 8;
-    _light_boundary.height = (_tile_size * _scaling) * 8;
+    _light_boundary.top    = boundary.top - (_tile_size * _scaling) * _light_scaling;
+    _light_boundary.left   = boundary.left - (_tile_size * _scaling) * _light_scaling;
+    _light_boundary.width  = (_tile_size * _scaling) * _light_scaling * 2;
+    _light_boundary.height = (_tile_size * _scaling) * _light_scaling * 2;
 
     for (auto&& row : _sprites) {
         for (auto& sprite : row) {
@@ -173,7 +203,23 @@ void Location::light_up(sf::FloatRect const& boundary)
             }
         }
     }
-    for (auto& object : _scene_objects) {
+    for (auto& object : _spikes) {
+        if (_light_boundary.intersects(object->get_boundaries())) {
+            object->set_color(sf::Color::White);
+        }
+        else {
+            object->set_color(sf::Color::Black);
+        }
+    }
+    for (auto& object : _torches) {
+        if (_light_boundary.intersects(object->get_boundaries())) {
+            object->set_color(sf::Color::White);
+        }
+        else {
+            object->set_color(sf::Color::Black);
+        }
+    }
+    for (auto& object : _healths) {
         if (_light_boundary.intersects(object->get_boundaries())) {
             object->set_color(sf::Color::White);
         }
@@ -183,9 +229,28 @@ void Location::light_up(sf::FloatRect const& boundary)
     }
 }
 
-std::vector<std::shared_ptr<Spikes>> Location::get_scene() const
+std::list<std::shared_ptr<Spikes>> Location::get_spikes() const
 {
-    return _scene_objects;
+    return _spikes;
+}
+
+std::list<std::shared_ptr<Torch>> Location::get_torches() const
+{
+    return _torches;
+}
+
+std::list<std::shared_ptr<Health>> Location::get_health() const
+{
+    return _healths;
+}
+
+void Location::remove_object(std::shared_ptr<Torch> const& torch)
+{
+    _torches.remove(torch);
+}
+void Location::remove_object(std::shared_ptr<Health> const& health)
+{
+    _healths.remove(health);
 }
 
 sf::FloatRect Location::get_light_boundary() const

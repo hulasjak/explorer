@@ -15,6 +15,7 @@ public:
     virtual void spawn(sf::Vector2i const& start_pose) override;
     bool try_to_kill();
     int get_lives() const;
+    void add_life();
 
 private:
     int _lives;
